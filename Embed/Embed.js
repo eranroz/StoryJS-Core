@@ -122,7 +122,8 @@ function createStoryJS(c, src) {
 			{ name:	"SansitaOne-Kameron",			google:	[ 'Sansita+One::latin', 'Kameron:400,700:latin' ] },
 			{ name:	"Lora-Istok",					google:	[ 'Lora:400,700,400italic,700italic:latin', 'Istok+Web:400,700,400italic,700italic:latin' ] },
 			{ name:	"Pacifico-Arimo",				google:	[ 'Pacifico::latin', 'Arimo:400,700,400italic,700italic:latin' ] }
-		];
+		],
+		$timeline_promise;
 			
 	/* BUILD CONFIG
 	================================================== */	
@@ -249,6 +250,7 @@ function createStoryJS(c, src) {
 	if (!ready.jquery) {
 		LoadLib.js(path.jquery, onloaded_jquery);
 	} else {
+		$timeline_promise = new jQuery.Deferred();
 		onloaded_jquery();
 	}
 	
@@ -350,9 +352,12 @@ function createStoryJS(c, src) {
 		VMM.debug = storyjs_e_config.debug;
 		storyjs_embedjs = new VMM.Timeline(storyjs_e_config.id);
 		storyjs_embedjs.init(storyjs_e_config);
+		if (typeof tls=='object') {
+			$timeline_promise.resolve(storyjs_embedjs);
+		}
 		if (isCDN) {
 			VMM.bindEvent(global, onHeadline, "HEADLINE");
 		}
 	}
-		
+	return $timeline_promise;
 }
